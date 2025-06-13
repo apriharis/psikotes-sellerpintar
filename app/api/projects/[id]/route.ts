@@ -14,18 +14,18 @@ export async function GET(request: NextRequest, { params }: { params: { id: stri
     const project = await prisma.project.findFirst({
       where: {
         id: params.id,
-        OR: [{ ownerId: session.user.id }, { members: { some: { userId: session.user.id } } }],
+        OR: [{ ownerId: session.user.id }, { memberships: { some: { userId: session.user.id } } }],
       },
       include: {
-        owner: { select: { id: true, name: true, email: true } },
-        members: {
+        owner: { select: { id: true, email: true } },
+        memberships: {
           include: {
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, email: true } },
           },
         },
         tasks: {
           include: {
-            assignee: { select: { id: true, name: true, email: true } },
+            assignee: { select: { id: true, email: true } },
           },
           orderBy: { createdAt: "desc" },
         },

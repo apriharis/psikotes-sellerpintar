@@ -21,22 +21,20 @@ import { Plus } from "lucide-react"
 
 interface CreateTaskDialogProps {
   projectId: string
-  members: Array<{
+  memberships: Array<{
     user: {
       id: string
-      name?: string | null
       email: string
     }
   }>
   owner: {
     id: string
-    name?: string | null
     email: string
   }
   onTaskCreated: () => void
 }
 
-export function CreateTaskDialog({ projectId, members, owner, onTaskCreated }: CreateTaskDialogProps) {
+export function CreateTaskDialog({ projectId, memberships, owner, onTaskCreated }: CreateTaskDialogProps) {
   const [open, setOpen] = useState(false)
   const [loading, setLoading] = useState(false)
   const [formData, setFormData] = useState({
@@ -45,7 +43,7 @@ export function CreateTaskDialog({ projectId, members, owner, onTaskCreated }: C
     assigneeId: "",
   })
 
-  const allMembers = [owner, ...members.map((m) => m.user)]
+  const allMembers = [owner, ...memberships.map((m) => m.user)]
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -124,7 +122,7 @@ export function CreateTaskDialog({ projectId, members, owner, onTaskCreated }: C
                   <SelectItem value="none">No assignee</SelectItem>
                   {allMembers.map((member) => (
                     <SelectItem key={member.id} value={member.id}>
-                      {member.name || member.email}
+                      {member.email}
                     </SelectItem>
                   ))}
                 </SelectContent>

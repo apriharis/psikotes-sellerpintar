@@ -13,13 +13,13 @@ export async function GET() {
 
     const projects = await prisma.project.findMany({
       where: {
-        OR: [{ ownerId: session.user.id }, { members: { some: { userId: session.user.id } } }],
+        OR: [{ ownerId: session.user.id }, { memberships: { some: { userId: session.user.id } } }],
       },
       include: {
-        owner: { select: { id: true, name: true, email: true } },
-        members: {
+        owner: { select: { id: true, email: true } },
+        memberships: {
           include: {
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, email: true } },
           },
         },
         _count: {
@@ -44,7 +44,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { name, description } = await request.json()
+    const { name } = await request.json()
 
     if (!name) {
       return NextResponse.json({ error: "Project name is required" }, { status: 400 })
@@ -53,14 +53,13 @@ export async function POST(request: NextRequest) {
     const project = await prisma.project.create({
       data: {
         name,
-        description,
         ownerId: session.user.id,
       },
       include: {
-        owner: { select: { id: true, name: true, email: true } },
-        members: {
+        owner: { select: { id: true, email: true } },
+        memberships: {
           include: {
-            user: { select: { id: true, name: true, email: true } },
+            user: { select: { id: true, email: true } },
           },
         },
       },

@@ -18,7 +18,6 @@ interface AuthFormProps {
 
 export function AuthForm({ mode }: AuthFormProps) {
   const [formData, setFormData] = useState({
-    name: "",
     email: "",
     password: "",
   })
@@ -92,19 +91,6 @@ export function AuthForm({ mode }: AuthFormProps) {
             <Alert variant="destructive">
               <AlertDescription>{error}</AlertDescription>
             </Alert>
-          )}
-
-          {mode === "register" && (
-            <div className="space-y-2">
-              <Label htmlFor="name">Name</Label>
-              <Input
-                id="name"
-                type="text"
-                value={formData.name}
-                onChange={(e) => setFormData((prev) => ({ ...prev, name: e.target.value }))}
-                required={mode === "register"}
-              />
-            </div>
           )}
 
           <div className="space-y-2">

@@ -8,17 +8,14 @@ interface ProjectCardProps {
   project: {
     id: string
     name: string
-    description?: string | null
     createdAt: string
     owner: {
       id: string
-      name?: string | null
       email: string
     }
-    members: Array<{
+    memberships: Array<{
       user: {
         id: string
-        name?: string | null
         email: string
       }
     }>
@@ -31,7 +28,7 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project, currentUserId }: ProjectCardProps) {
   const isOwner = project.owner.id === currentUserId
-  const totalMembers = project.members.length + 1 // +1 for owner
+  const totalMembers = project.memberships.length + 1 // +1 for owner
 
   return (
     <Link href={`/projects/${project.id}`}>
@@ -63,20 +60,16 @@ export function ProjectCard({ project, currentUserId }: ProjectCardProps) {
             </div>
             <div className="flex -space-x-2">
               <Avatar className="h-6 w-6 border-2 border-background">
-                <AvatarFallback className="text-xs">
-                  {project.owner.name?.[0] || project.owner.email[0].toUpperCase()}
-                </AvatarFallback>
+                <AvatarFallback className="text-xs">{project.owner.email[0].toUpperCase()}</AvatarFallback>
               </Avatar>
-              {project.members.slice(0, 2).map((member) => (
+              {project.memberships.slice(0, 2).map((member) => (
                 <Avatar key={member.user.id} className="h-6 w-6 border-2 border-background">
-                  <AvatarFallback className="text-xs">
-                    {member.user.name?.[0] || member.user.email[0].toUpperCase()}
-                  </AvatarFallback>
+                  <AvatarFallback className="text-xs">{member.user.email[0].toUpperCase()}</AvatarFallback>
                 </Avatar>
               ))}
-              {project.members.length > 2 && (
+              {project.memberships.length > 2 && (
                 <Avatar className="h-6 w-6 border-2 border-background">
-                  <AvatarFallback className="text-xs">+{project.members.length - 2}</AvatarFallback>
+                  <AvatarFallback className="text-xs">+{project.memberships.length - 2}</AvatarFallback>
                 </Avatar>
               )}
             </div>

@@ -25,16 +25,13 @@ import Link from "next/link"
 interface Project {
   id: string
   name: string
-  description?: string | null
   owner: {
     id: string
-    name?: string | null
     email: string
   }
-  members: Array<{
+  memberships: Array<{
     user: {
       id: string
-      name?: string | null
       email: string
     }
   }>
@@ -83,9 +80,8 @@ export default function ProjectSettingsPage({ params }: { params: { id: string }
     const exportData = {
       project: {
         name: project.name,
-        description: project.description,
         owner: project.owner,
-        members: project.members,
+        memberships: project.memberships,
         exportedAt: new Date().toISOString(),
       },
     }
@@ -161,33 +157,31 @@ export default function ProjectSettingsPage({ params }: { params: { id: string }
                 <div className="flex items-center justify-between p-3 border rounded-lg">
                   <div className="flex items-center space-x-3">
                     <Avatar>
-                      <AvatarFallback>{project.owner.name?.[0] || project.owner.email[0].toUpperCase()}</AvatarFallback>
+                      <AvatarFallback>{project.owner.email[0].toUpperCase()}</AvatarFallback>
                     </Avatar>
                     <div>
-                      <p className="font-medium">{project.owner.name || project.owner.email}</p>
-                      <p className="text-sm text-muted-foreground">{project.owner.email}</p>
+                      <p className="font-medium">{project.owner.email}</p>
                     </div>
                   </div>
                   <Badge>Owner</Badge>
                 </div>
 
                 {/* Members */}
-                {project.members.map((member) => (
+                {project.memberships.map((member) => (
                   <div key={member.user.id} className="flex items-center justify-between p-3 border rounded-lg">
                     <div className="flex items-center space-x-3">
                       <Avatar>
-                        <AvatarFallback>{member.user.name?.[0] || member.user.email[0].toUpperCase()}</AvatarFallback>
+                        <AvatarFallback>{member.user.email[0].toUpperCase()}</AvatarFallback>
                       </Avatar>
                       <div>
-                        <p className="font-medium">{member.user.name || member.user.email}</p>
-                        <p className="text-sm text-muted-foreground">{member.user.email}</p>
+                        <p className="font-medium">{member.user.email}</p>
                       </div>
                     </div>
                     <Badge variant="secondary">Member</Badge>
                   </div>
                 ))}
 
-                {project.members.length === 0 && (
+                {project.memberships.length === 0 && (
                   <p className="text-center text-muted-foreground py-4">
                     No team members yet. Invite someone to collaborate!
                   </p>

@@ -15,10 +15,9 @@ interface Task {
   id: string
   title: string
   description?: string | null
-  status: "TODO" | "IN_PROGRESS" | "DONE"
+  status: string
   assignee?: {
     id: string
-    name?: string | null
     email: string
   } | null
 }
@@ -30,9 +29,9 @@ interface TaskBoardProps {
 }
 
 const statusColumns = [
-  { key: "TODO" as const, title: "To Do", color: "bg-slate-100" },
-  { key: "IN_PROGRESS" as const, title: "In Progress", color: "bg-blue-100" },
-  { key: "DONE" as const, title: "Done", color: "bg-green-100" },
+  { key: "TODO", title: "To Do", color: "bg-slate-100" },
+  { key: "IN_PROGRESS", title: "In Progress", color: "bg-blue-100" },
+  { key: "DONE", title: "Done", color: "bg-green-100" },
 ]
 
 export function TaskBoard({ tasks, projectId, onTaskUpdate }: TaskBoardProps) {
@@ -47,7 +46,7 @@ export function TaskBoard({ tasks, projectId, onTaskUpdate }: TaskBoardProps) {
     e.preventDefault()
   }
 
-  const handleDrop = async (e: React.DragEvent, newStatus: Task["status"]) => {
+  const handleDrop = async (e: React.DragEvent, newStatus: string) => {
     e.preventDefault()
 
     if (!draggedTask || draggedTask.status === newStatus) {
@@ -86,7 +85,7 @@ export function TaskBoard({ tasks, projectId, onTaskUpdate }: TaskBoardProps) {
     }
   }
 
-  const getTasksByStatus = (status: Task["status"]) => {
+  const getTasksByStatus = (status: string) => {
     return tasks.filter((task) => task.status === status)
   }
 
@@ -137,13 +136,9 @@ export function TaskBoard({ tasks, projectId, onTaskUpdate }: TaskBoardProps) {
                     {task.assignee && (
                       <div className="flex items-center space-x-2">
                         <Avatar className="h-5 w-5">
-                          <AvatarFallback className="text-xs">
-                            {task.assignee.name?.[0] || task.assignee.email[0].toUpperCase()}
-                          </AvatarFallback>
+                          <AvatarFallback className="text-xs">{task.assignee.email[0].toUpperCase()}</AvatarFallback>
                         </Avatar>
-                        <span className="text-xs text-muted-foreground">
-                          {task.assignee.name || task.assignee.email}
-                        </span>
+                        <span className="text-xs text-muted-foreground">{task.assignee.email}</span>
                       </div>
                     )}
                   </CardContent>

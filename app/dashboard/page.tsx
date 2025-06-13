@@ -4,8 +4,7 @@ import { authOptions } from "@/lib/auth"
 import { prisma } from "@/lib/prisma"
 import { ProjectCard } from "@/components/project-card"
 import { CreateProjectDialog } from "@/components/create-project-dialog"
-import { Button } from "@/components/ui/button"
-import { signOut } from "next-auth/react"
+import { SignOutButton } from "@/components/sign-out-button"
 
 export default async function DashboardPage() {
   const session = await getServerSession(authOptions)
@@ -16,13 +15,13 @@ export default async function DashboardPage() {
 
   const projects = await prisma.project.findMany({
     where: {
-      OR: [{ ownerId: session.user.id }, { members: { some: { userId: session.user.id } } }],
+      OR: [{ ownerId: session.user.id }, { memberships: { some: { userId: session.user.id } } }],
     },
     include: {
-      owner: { select: { id: true, name: true, email: true } },
-      members: {
+      owner: { select: { id: true, email: true } },
+      memberships: {
         include: {
-          user: { select: { id: true, name: true, email: true } },
+          user: { select: { id: true, email: true } },
         },
       },
       _count: {
@@ -39,20 +38,11 @@ export default async function DashboardPage() {
           <div className="flex justify-between items-center py-4">
             <div>
               <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-              <p className="text-gray-600">Welcome back, {session.user.name || session.user.email}</p>
+              <p className="text-gray-600">Welcome back, {session.user.email}</p>
             </div>
             <div className="flex items-center space-x-4">
               <CreateProjectDialog />
-              <form
-                action={async () => {
-                  "use server"
-                  await signOut({ redirectTo: "/login" })
-                }}
-              >
-                <Button variant="outline" type="submit">
-                  Sign Out
-                </Button>
-              </form>
+              <SignOutButton />
             </div>
           </div>
         </div>

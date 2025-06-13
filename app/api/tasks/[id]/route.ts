@@ -18,7 +18,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       where: {
         id: params.id,
         project: {
-          OR: [{ ownerId: session.user.id }, { members: { some: { userId: session.user.id } } }],
+          OR: [{ ownerId: session.user.id }, { memberships: { some: { userId: session.user.id } } }],
         },
       },
     })
@@ -36,7 +36,7 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
         ...(assigneeId !== undefined && { assigneeId }),
       },
       include: {
-        assignee: { select: { id: true, name: true, email: true } },
+        assignee: { select: { id: true, email: true } },
       },
     })
 
@@ -60,7 +60,7 @@ export async function DELETE(request: NextRequest, { params }: { params: { id: s
       where: {
         id: params.id,
         project: {
-          OR: [{ ownerId: session.user.id }, { members: { some: { userId: session.user.id } } }],
+          OR: [{ ownerId: session.user.id }, { memberships: { some: { userId: session.user.id } } }],
         },
       },
     })

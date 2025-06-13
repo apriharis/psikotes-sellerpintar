@@ -15,16 +15,13 @@ import Link from "next/link"
 interface Project {
   id: string
   name: string
-  description?: string | null
   owner: {
     id: string
-    name?: string | null
     email: string
   }
-  members: Array<{
+  memberships: Array<{
     user: {
       id: string
-      name?: string | null
       email: string
     }
   }>
@@ -32,10 +29,9 @@ interface Project {
     id: string
     title: string
     description?: string | null
-    status: "TODO" | "IN_PROGRESS" | "DONE"
+    status: string
     assignee?: {
       id: string
-      name?: string | null
       email: string
     } | null
   }>
@@ -79,7 +75,7 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
   }
 
   const isOwner = project.owner.id === session?.user?.id
-  const totalMembers = project.members.length + 1
+  const totalMembers = project.memberships.length + 1
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -112,23 +108,23 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
                       {project.owner.name?.[0] || project.owner.email[0].toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  {project.members.slice(0, 3).map((member) => (
+                  {project.memberships.slice(0, 3).map((member) => (
                     <Avatar key={member.user.id} className="h-6 w-6 border-2 border-background">
                       <AvatarFallback className="text-xs">
                         {member.user.name?.[0] || member.user.email[0].toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
                   ))}
-                  {project.members.length > 3 && (
+                  {project.memberships.length > 3 && (
                     <Avatar className="h-6 w-6 border-2 border-background">
-                      <AvatarFallback className="text-xs">+{project.members.length - 3}</AvatarFallback>
+                      <AvatarFallback className="text-xs">+{project.memberships.length - 3}</AvatarFallback>
                     </Avatar>
                   )}
                 </div>
               </div>
               <CreateTaskDialog
                 projectId={project.id}
-                members={project.members}
+                memberships={project.memberships}
                 owner={project.owner}
                 onTaskCreated={fetchProject}
               />

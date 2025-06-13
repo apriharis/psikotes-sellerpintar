@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     const project = await prisma.project.findFirst({
       where: {
         id: projectId,
-        OR: [{ ownerId: session.user.id }, { members: { some: { userId: session.user.id } } }],
+        OR: [{ ownerId: session.user.id }, { memberships: { some: { userId: session.user.id } } }],
       },
     })
 
@@ -32,12 +32,13 @@ export async function POST(request: NextRequest) {
     const task = await prisma.task.create({
       data: {
         title,
-        description,
+        description: description || "",
+        status: "TODO",
         projectId,
         assigneeId,
       },
       include: {
-        assignee: { select: { id: true, name: true, email: true } },
+        assignee: { select: { id: true, email: true } },
       },
     })
 

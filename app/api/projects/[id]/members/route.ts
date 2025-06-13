@@ -39,7 +39,7 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     }
 
     // Check if user is already a member
-    const existingMember = await prisma.projectMember.findUnique({
+    const existingMember = await prisma.membership.findUnique({
       where: {
         userId_projectId: {
           userId: userToInvite.id,
@@ -53,13 +53,13 @@ export async function POST(request: NextRequest, { params }: { params: { id: str
     }
 
     // Add member
-    const member = await prisma.projectMember.create({
+    const member = await prisma.membership.create({
       data: {
         userId: userToInvite.id,
         projectId: params.id,
       },
       include: {
-        user: { select: { id: true, name: true, email: true } },
+        user: { select: { id: true, email: true } },
       },
     })
 
