@@ -1,0 +1,4 @@
+-- Initialize database tables
+-- This will be handled by Prisma migrations
+-- Run: npx prisma migrate dev --name init
+-- Run: npx prisma generate
