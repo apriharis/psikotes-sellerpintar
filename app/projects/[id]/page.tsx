@@ -11,6 +11,7 @@ import { CreateTaskDialog } from "@/components/create-task-dialog"
 import { InviteMemberDialog } from "@/components/invite-member-dialog"
 import { ArrowLeft, Settings } from "lucide-react"
 import Link from "next/link"
+import { TaskAnalytics } from "@/components/task-analytics"
 
 interface Project {
   id: string
@@ -140,7 +141,14 @@ export default function ProjectPage({ params }: { params: { id: string } }) {
       </header>
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <TaskBoard tasks={project.tasks} projectId={project.id} onTaskUpdate={fetchProject} />
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+          <div className="lg:col-span-3">
+            <TaskBoard tasks={project.tasks} projectId={project.id} onTaskUpdate={fetchProject} />
+          </div>
+          <div>
+            <TaskAnalytics tasks={project.tasks} />
+          </div>
+        </div>
       </main>
     </div>
   )

@@ -35,6 +35,16 @@ interface Project {
       email: string
     }
   }>
+  tasks?: Array<{
+    id: string
+    title: string
+    description: string
+    status: string
+    assignee?: {
+      id: string
+      email: string
+    } | null
+  }>
 }
 
 export default function ProjectSettingsPage({ params }: { params: { id: string } }) {
@@ -74,14 +84,32 @@ export default function ProjectSettingsPage({ params }: { params: { id: string }
     }
   }
 
+  // Update the exportProjectData function to include more comprehensive data
   const exportProjectData = () => {
     if (!project) return
 
     const exportData = {
       project: {
+        id: project.id,
         name: project.name,
         owner: project.owner,
-        memberships: project.memberships,
+        members: project.memberships.map((m) => ({
+          id: m.user.id,
+          email: m.user.email,
+        })),
+        tasks:
+          project.tasks?.map((task) => ({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            status: task.status,
+            assignee: task.assignee
+              ? {
+                  id: task.assignee.id,
+                  email: task.assignee.email,
+                }
+              : null,
+          })) || [],
         exportedAt: new Date().toISOString(),
       },
     }
